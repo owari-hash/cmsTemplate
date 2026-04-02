@@ -1,8 +1,9 @@
 import { CMSPage, cms } from '@cms-builder/core';
 import * as Components from '@/components';
 
-export default async function DynamicRoutePage({ params }: { params: { slug?: string[] } }) {
-  const route = params.slug ? `/${params.slug.join('/')}` : '/';
+export default async function Page({ params }: { params: Promise<{ slug?: string[] }> }) {
+  const resolvedParams = await params;
+  const route = resolvedParams.slug ? '/' + resolvedParams.slug.join('/') : '/';
   
   const design = await cms.getDesign();
 

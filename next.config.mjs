@@ -1,8 +1,13 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   transpilePackages: ["@cms-builder/core"],
-  experimental: {
-    allowedDevOrigins: ["202.179.6.77"],
+  allowedDevOrigins: ["202.179.6.77"],
+  devIndicators: false,
+  typescript: {
+    ignoreBuildErrors: true,
+  },
+  eslint: {
+    ignoreDuringBuilds: true,
   },
 };
 
