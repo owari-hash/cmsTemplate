@@ -9,9 +9,9 @@ export default async function Page({ params }: { params: Promise<{ slug?: string
 
   return (
     <CMSPage 
-      design={design} 
-      componentMap={Components} 
-      route={route} 
+      design={design}
+      componentMap={Components}
+      route={route}
     />
   );
 }
