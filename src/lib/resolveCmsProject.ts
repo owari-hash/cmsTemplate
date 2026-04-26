@@ -5,7 +5,7 @@
  */
 const PROJECT_RE = /^[a-zA-Z0-9][a-zA-Z0-9._-]{0,127}$/
 
-function first(
+export function firstSearchParam(
   v: string | string[] | undefined,
 ): string | undefined {
   if (v === undefined) return undefined
@@ -20,11 +20,11 @@ export function resolveCmsProject(
 
   const secret = process.env.CMS_PREVIEW_TOKEN
   if (secret) {
-    const t = first(searchParams.cmsPreviewToken)
+    const t = firstSearchParam(searchParams.cmsPreviewToken)
     if (t !== secret) return fallback
   }
 
-  const p = first(searchParams.project)
+  const p = firstSearchParam(searchParams.project)
   if (p && PROJECT_RE.test(p)) return p
   return fallback
 }

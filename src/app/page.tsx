@@ -1,5 +1,11 @@
-import { CMSPage, cmsApi } from '@cms-builder/core';
+import { cmsApi } from '@cms-builder/core';
 import { resolveCmsProject } from '@/lib/resolveCmsProject';
+import { CMSPageWithLive } from '@/components/CMSPageWithLive';
+import {
+  resolveCmsLiveEditEnabled,
+  resolveCmsLiveEditParentOrigin,
+} from '@/lib/resolveCmsLiveEdit';
+import { LiveCmsEditBridge } from '@/components/LiveCmsEditBridge';
 
 export default async function HomePage({
   searchParams,
@@ -8,6 +14,8 @@ export default async function HomePage({
 }) {
   const sp = await searchParams;
   const PROJECT = resolveCmsProject(sp);
+  const parentOrigin = resolveCmsLiveEditParentOrigin(sp);
+  const liveEdit = resolveCmsLiveEditEnabled(sp) && !!parentOrigin;
   const route = '/';
   const [design, instances] = await Promise.all([
     cmsApi.getSiteContent(PROJECT).catch(() => null),
@@ -28,10 +36,16 @@ export default async function HomePage({
   }
 
   return (
-    <CMSPage
-      design={design}
-      route={route}
-      componentInstances={instances}
-    />
+    <>
+      <CMSPageWithLive
+        design={design}
+        route={route}
+        componentInstances={instances}
+        liveEdit={liveEdit}
+      />
+      {liveEdit && parentOrigin ? (
+        <LiveCmsEditBridge parentOrigin={parentOrigin} />
+      ) : null}
+    </>
   );
 }
