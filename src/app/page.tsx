@@ -1,8 +1,13 @@
 import { CMSPage, cmsApi } from '@cms-builder/core';
+import { resolveCmsProject } from '@/lib/resolveCmsProject';
 
-const PROJECT = process.env.NEXT_PUBLIC_PROJECT_NAME || 'default';
-
-export default async function HomePage() {
+export default async function HomePage({
+  searchParams,
+}: {
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
+}) {
+  const sp = await searchParams;
+  const PROJECT = resolveCmsProject(sp);
   const route = '/';
   const [design, instances] = await Promise.all([
     cmsApi.getSiteContent(PROJECT).catch(() => null),

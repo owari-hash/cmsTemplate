@@ -1,10 +1,18 @@
 import { CMSPage, cmsApi } from '@cms-builder/core';
+import { resolveCmsProject } from '@/lib/resolveCmsProject';
 
-const PROJECT = process.env.NEXT_PUBLIC_PROJECT_NAME || 'default';
+export default async function Page({
+  params,
+  searchParams,
+}: {
+  params: Promise<{ slug?: string[] }>;
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
+}) {
+  const { slug } = await params;
+  const sp = await searchParams;
+  const PROJECT = resolveCmsProject(sp);
+  const route = '/' + (slug?.join('/') || '');
 
-export default async function Page({ params }: { params: { slug?: string[] } }) {
-  const route = '/' + (params.slug?.join('/') || '');
-  
   const [design, instances] = await Promise.all([
     cmsApi.getSiteContent(PROJECT).catch(() => null),
     cmsApi.getPageComponents(PROJECT, route).catch(() => []),
