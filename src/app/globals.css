@@ -2,6 +2,8 @@
 @source "../**/*.{ts,tsx,js,jsx,mdx}";
 @source "../../node_modules/@cms-builder/core/dist/**/*.{js,mjs,cjs}";
 @source "../../node_modules/@cms-builder/core/src/**/*.{ts,tsx,js,jsx}";
+/* If `file:../cmsBuilder` symlinks are not picked up by the scanner, also scan the sibling package (local monorepo). */
+@source "../../../cmsBuilder/dist/**/*.{js,mjs,cjs}";
 
 @theme {
   --color-primary: var(--primary-color);
