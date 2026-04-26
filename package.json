@@ -10,7 +10,7 @@
     "test": "node --test tests"
   },
   "dependencies": {
-    "@cms-builder/core": "^1.1.1",
+    "@cms-builder/core": "file:../cmsBuilder",
     "next": "^15.0.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"

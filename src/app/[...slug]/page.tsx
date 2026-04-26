@@ -1,8 +1,9 @@
-import { cmsApi } from '@cms-builder/core';
+import { cmsApi, normalizePageRoute } from '@cms-builder/core';
 import { resolveCmsProject } from '@/lib/resolveCmsProject';
 import { CMSPageWithLive } from '@/components/CMSPageWithLive';
 import {
-  resolveCmsLiveEditEnabled,
+  resolveCmsLiveEditBridgeActive,
+  resolveCmsLiveEditContentMode,
   resolveCmsLiveEditParentOrigin,
 } from '@/lib/resolveCmsLiveEdit';
 import { LiveCmsEditBridge } from '@/components/LiveCmsEditBridge';
@@ -18,8 +19,10 @@ export default async function Page({
   const sp = await searchParams;
   const PROJECT = resolveCmsProject(sp);
   const parentOrigin = resolveCmsLiveEditParentOrigin(sp);
-  const liveEdit = resolveCmsLiveEditEnabled(sp) && !!parentOrigin;
-  const route = '/' + (slug?.join('/') || '');
+  const bridgeActive = resolveCmsLiveEditBridgeActive(sp);
+  const liveEdit =
+    resolveCmsLiveEditContentMode(sp) && !!parentOrigin;
+  const route = normalizePageRoute('/' + (slug?.join('/') || ''));
 
   const [design, instances] = await Promise.all([
     cmsApi.getSiteContent(PROJECT).catch(() => null),
@@ -47,7 +50,7 @@ export default async function Page({
         componentInstances={instances}
         liveEdit={liveEdit}
       />
-      {liveEdit && parentOrigin ? (
+      {bridgeActive && parentOrigin ? (
         <LiveCmsEditBridge parentOrigin={parentOrigin} />
       ) : null}
     </>

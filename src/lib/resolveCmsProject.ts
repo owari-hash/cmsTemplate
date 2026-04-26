@@ -1,9 +1,18 @@
 /**
  * Picks CMS project for this request.
- * When CMS_DYNAMIC_PROJECT=true (server env), ?project= may override NEXT_PUBLIC_PROJECT_NAME.
- * If CMS_PREVIEW_TOKEN is set, ?cmsPreviewToken= must match or the default project is used.
+ * `?project=` is honored when `CMS_DYNAMIC_PROJECT=true` (server) **or**
+ * `NEXT_PUBLIC_CMS_USE_PROJECT_PARAM=true` (build-time) so the public template
+ * and admin iframes stay aligned without two separate envs.
+ * If `CMS_PREVIEW_TOKEN` is set, `?cmsPreviewToken=` must match or the default project is used.
  */
 const PROJECT_RE = /^[a-zA-Z0-9][a-zA-Z0-9._-]{0,127}$/
+
+function canUseProjectQueryParam(): boolean {
+  return (
+    process.env.CMS_DYNAMIC_PROJECT === 'true' ||
+    process.env.NEXT_PUBLIC_CMS_USE_PROJECT_PARAM === 'true'
+  )
+}
 
 export function firstSearchParam(
   v: string | string[] | undefined,
@@ -16,7 +25,7 @@ export function resolveCmsProject(
   searchParams: Record<string, string | string[] | undefined>,
 ): string {
   const fallback = process.env.NEXT_PUBLIC_PROJECT_NAME || 'default'
-  if (process.env.CMS_DYNAMIC_PROJECT !== 'true') return fallback
+  if (!canUseProjectQueryParam()) return fallback
 
   const secret = process.env.CMS_PREVIEW_TOKEN
   if (secret) {
